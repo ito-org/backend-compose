@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-    mongo:
+    mongodb:
         image: mongo:latest
         restart: always
         networks:
@@ -10,24 +10,28 @@ services:
             - 27017:27017
 
     api-download:
+        depends_on:
+            - mongodb
         image: ito/api-download:latest
         restart: always
         networks:
             - ito_net
         ports:
             - 5000:5000
-        depends_on:
-            - mongo
-
+        environment:
+            - MONGO_URI=mongodb://mongodb:27017
+            
     api-upload:
+        depends_on:
+            - mongodb
         image: ito/api-upload:latest
         restart: always
         networks:
             - ito_net
         ports:
             - 5001:5001
-        depends_on:
-            - mongo
+        environment:
+            - MONGO_URI=mongodb://mongodb:27017
 
 networks: 
     ito_net:
